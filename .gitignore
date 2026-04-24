@@ -15,7 +15,7 @@
 *.vrb
 
 # Generated PDFs
-*.pdf
+#*.pdf
 
 # Editor and OS files
 .DS_Store
