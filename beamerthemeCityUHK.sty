@@ -1,0 +1,164 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeCityUHK}[2026/04/23 CityUHK PPT-inspired beamer theme]
+
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\RequirePackage{etoolbox}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{booktabs}
+\RequirePackage{array}
+\RequirePackage{ragged2e}
+
+\mode<presentation>
+
+\definecolor{CityURed}{HTML}{B11117}
+\definecolor{CityUDark}{HTML}{222222}
+\definecolor{CityUMuted}{HTML}{6B6B6B}
+\definecolor{CityUSoft}{HTML}{F4F4F4}
+\definecolor{CityUGold}{HTML}{E07B39}
+\colorlet{CityUSand}{CityUSoft}
+\colorlet{CityUGrey}{CityUMuted}
+
+\newcommand{\CityUHKAssetDir}{assets}
+\newcommand{\CityUHKTitleBg}{\CityUHKAssetDir/cityuhk_title.jpg}
+\newcommand{\CityUHKContentBg}{\CityUHKAssetDir/cityuhk_content.jpg}
+\newcommand{\CityUHKSectionBg}{\CityUHKAssetDir/cityuhk_section.jpg}
+\newcommand{\CityUHKClosingBg}{\CityUHKAssetDir/cityuhk_closing.jpg}
+\newcommand{\CityUHKConference}{}
+\newcommand{\conference}[1]{\renewcommand{\CityUHKConference}{#1}}
+\newcommand{\CityUHKTitleNote}{}
+\newcommand{\titlenote}[1]{\renewcommand{\CityUHKTitleNote}{#1}}
+
+\setbeamercolor{normal text}{fg=CityUDark,bg=white}
+\setbeamercolor{structure}{fg=CityURed}
+\setbeamercolor{title}{fg=CityURed}
+\setbeamercolor{subtitle}{fg=CityUMuted}
+\setbeamercolor{frametitle}{fg=CityUDark,bg=}
+\setbeamercolor{block title}{fg=white,bg=CityURed}
+\setbeamercolor{block body}{fg=CityUDark,bg=white}
+\setbeamercolor{block title alerted}{fg=white,bg=CityUGold}
+\setbeamercolor{block body alerted}{fg=CityUDark,bg=white}
+\setbeamercolor{block title example}{fg=white,bg=CityUMuted}
+\setbeamercolor{block body example}{fg=CityUDark,bg=white}
+\setbeamercolor{footline}{fg=CityUMuted,bg=white}
+\setbeamercolor{section in head/foot}{fg=CityUMuted,bg=white}
+\setbeamercolor{section in head/foot shaded}{fg=CityUMuted!55,bg=white}
+\setbeamercolor{item}{fg=CityURed}
+\setbeamercolor{enumerate item}{fg=CityURed}
+
+\setbeamerfont{title}{series=\bfseries,size=\LARGE}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{frametitle}{series=\bfseries,size=\Large}
+\setbeamerfont{section title}{series=\bfseries,size=\Huge}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{items}[circle]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[circle]
+
+\setbeamersize{text margin left=1.05cm,text margin right=1.00cm}
+
+\newcommand{\CityUHKFullBackground}[1]{
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=south west,inner sep=0] at (current page.south west)
+      {\includegraphics[width=\paperwidth,height=\paperheight]{#1}};
+  \end{tikzpicture}
+}
+
+\makeatletter
+\newcommand{\CityUHKUseContentBackground}{
+  \usebackgroundtemplate{\CityUHKFullBackground{\CityUHKContentBg}}
+}
+\AtBeginDocument{\CityUHKUseContentBackground}
+\makeatother
+
+\setbeamertemplate{frametitle}{
+  \vspace*{0.75cm}
+  \begin{beamercolorbox}[wd=\textwidth,ht=0.88cm,dp=0.08cm]{frametitle}
+    {\color{CityURed}\rule{0.52\textwidth}{1.4pt}\par}
+    \vspace{0.10cm}
+    \usebeamerfont{frametitle}\insertframetitle
+    \ifx\insertframesubtitle\@empty\else
+      \par{\small\color{CityUMuted}\insertframesubtitle}
+    \fi
+  \end{beamercolorbox}
+}
+
+\setbeamertemplate{footline}{
+  \leavevmode
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0.72cm,dp=0.18cm,leftskip=0.9cm,rightskip=0.9cm]{footline}
+    \color{CityURed}\rule{\dimexpr\paperwidth-1.8cm\relax}{0.8pt}\par
+    \vspace{0.06cm}
+    \hbox to \dimexpr\paperwidth-1.8cm\relax{
+      {\scriptsize\insertsectionnavigationhorizontal{0.72\paperwidth}{}{}}
+      \hfill
+      {\scriptsize\color{CityUMuted}\insertframenumber{} / \inserttotalframenumber}
+    }
+  \end{beamercolorbox}
+}
+
+\newcommand{\CityUHKSectionFrame}[1]{
+  {
+    \usebackgroundtemplate{\CityUHKFullBackground{\CityUHKSectionBg}}
+    \setbeamertemplate{footline}{}
+    \begin{frame}[plain]
+      \vspace*{1.3cm}
+      \hspace*{0cm}
+      \begin{minipage}{0.25\paperwidth}
+        {\usebeamerfont{section title}\color{CityUSoft}#1\par}
+      \end{minipage}
+    \end{frame}
+  }
+}
+
+\newcommand{\CityUHKClosingFrame}[2]{
+  {
+    \usebackgroundtemplate{\CityUHKFullBackground{\CityUHKClosingBg}}
+    \setbeamertemplate{footline}{}
+    \begin{frame}[plain]
+      \vspace*{2.0cm}
+      \hspace*{4.5cm}
+      \begin{minipage}{0.42\paperwidth}
+        {\fontsize{28}{32}\selectfont\bfseries\color{CityURed}#1\par}
+        \vspace{0.18cm}
+        {\large\color{CityUMuted}#2\par}
+      \end{minipage}
+    \end{frame}
+  }
+}
+
+\AtBeginSection[]{
+  \CityUHKSectionFrame{\insertsectionhead}
+}
+
+\setbeamertemplate{title page}{
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[
+      anchor=north west,
+      text=CityUMuted,
+      font=\large,
+      align=left
+    ] at ([xshift=2cm,yshift=-0.5cm]current page.north west)
+    {\CityUHKConference};
+
+    \node[
+      anchor=north west,
+      text width=0.58\paperwidth,
+      align=left,
+      inner sep=0pt
+    ] at ([xshift=4.5cm,yshift=-3.5cm]current page.north west)
+    {%
+      {\raggedright\usebeamerfont{title}\color{CityURed}\inserttitle\par}
+      \vspace{0.35cm}
+      {\raggedright \hspace{0.7cm} \large\color{CityUDark}\insertauthor\par}
+      \vspace{0.12cm}
+      {\raggedright \hspace{0.7cm} \normalsize\color{CityUMuted}\insertinstitute\par}
+      \vspace{0.12cm}
+      {\raggedright \hspace{0.7cm} \normalsize\color{CityUMuted}\insertdate\par}
+      \vspace{0.25cm}
+      {\raggedright \hspace{0.7cm} \small\color{CityUMuted}\CityUHKTitleNote\par}
+    };
+  \end{tikzpicture}
+}

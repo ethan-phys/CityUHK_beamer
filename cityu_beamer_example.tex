@@ -1,0 +1,226 @@
+\documentclass[aspectratio=169,professionalfonts]{beamer}
+
+\usetheme{CityUHK}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{siunitx}
+
+\pgfplotsset{compat=1.17}
+
+\title[Lantern Dynamics]{A Random Walk Through Lantern Dynamics}
+\subtitle{Fictional models, tidy equations, and surprisingly cooperative plots}
+\author[Q. Maple et al.]{Quinn Maple \and Riley Chen \and Morgan Vale}
+\institute[CityUHK]{Department of Imaginary Systems, City University of Hong Kong}
+\date[May 2027]{14 May 2027}
+\conference{7th Symposium on Stochastic Lanterns}
+\titlenote{Demo deck note: all names, events, and scientific claims are placeholders.}
+
+\begin{document}
+
+{
+\usebackgroundtemplate{\CityUHKFullBackground{\CityUHKClosingBg}}
+\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Setting}
+
+\begin{frame}{Why Lanterns?}{A harmless fictional motivation}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.55\textwidth}
+    \begin{block}{Toy problem}
+      Suppose a lantern drifts through a quiet city square while its brightness reacts to wind, memory, and moonlight.
+      We ask whether the observed glow can reveal the hidden drift pattern.
+    \end{block}
+
+    \begin{itemize}
+      \item The state variable is the latent position $x_t$.
+      \item The observable is the brightness signal $b_t$.
+      \item The nuisance parameter is the evening breeze $\eta_t$.
+    \end{itemize}
+
+    \column{0.40\textwidth}
+    \begin{alertblock}{Main message}
+      A clean slide should tell the audience what to look at before asking them to interpret details.
+    \end{alertblock}
+
+    \begin{exampleblock}{Template purpose}
+      This content is intentionally random, so the layout can be reused for any real topic.
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Ingredients}{Minimal objects for the story}
+  \begin{enumerate}
+    \item A hidden trajectory $x_0,x_1,\ldots,x_T$ moving through a two-dimensional plaza.
+    \item A response function $g(x_t)$ that converts location into observed brightness.
+    \item A correction term that remembers whether the lantern was bright a moment ago.
+    \item A small amount of noise, because perfectly behaved lanterns are suspicious.
+  \end{enumerate}
+
+  \vspace{0.3cm}
+  \begin{block}{Example sentence}
+    ``The lantern forgets slowly, drifts politely, and reports its location through light.''
+  \end{block}
+\end{frame}
+
+\section{Figure}
+
+\begin{frame}{Figure with Explanation}{Two invented brightness curves}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.55\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=0.95\linewidth,
+        height=4.6cm,
+        xmin=0, xmax=8,
+        ymin=0, ymax=1.2,
+        axis lines=left,
+        xlabel={Evening time $t$},
+        ylabel={Brightness $b(t)$},
+        tick style={CityUGrey},
+        every axis x label/.style={at={(ticklabel* cs:1.0)},anchor=west},
+        every axis y label/.style={at={(ticklabel* cs:1.0)},anchor=south},
+        grid=major,
+        grid style={draw=CityUSand!80!black},
+        xtick={0,2,4,6,8},
+        ytick={0,0.3,0.6,0.9,1.2}
+      ]
+        \addplot[very thick,CityURed,samples=160,domain=0:8] {0.62 + 0.28*sin(deg(1.25*x))*exp(-0.08*x)};
+        \addplot[very thick,CityUGold!85!black,dashed,samples=160,domain=0:8] {0.48 + 0.42*(1-exp(-0.55*x))*exp(-0.025*x)};
+        \legend{Observed glow,Smoothed estimate}
+      \end{axis}
+    \end{tikzpicture}
+
+    \column{0.40\textwidth}
+    \begin{block}{Reading the figure}
+      \begin{itemize}
+        \item The observed glow oscillates early in the evening.
+        \item The smoothed estimate rises more calmly.
+        \item The two curves agree once the transient behavior fades.
+      \end{itemize}
+    \end{block}
+
+    \begin{exampleblock}{Reusable pattern}
+      Pair the plot with a short reading guide.
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+\section{Math}
+
+\begin{frame}{Pure Math Example}{A compact fictional model}
+  \small
+  \begin{block}{Latent process}
+    For position $x_t \in \mathbb{R}^2$ and noise $\xi_t$,
+    \[
+      x_{t+1}
+      =
+      x_t
+      + \alpha
+      \begin{pmatrix}
+        \cos \theta_t \\
+        \sin \theta_t
+      \end{pmatrix}
+      + \sigma \xi_t .
+    \]
+  \end{block}
+
+  \begin{alertblock}{Brightness functional}
+    \[
+      b_t
+      =
+      \exp\left(-\frac{\norm{x_t-c}^2}{2\rho^2}\right)
+      + \lambda b_{t-1}
+      + \varepsilon_t,
+    \]
+    Here $c$ is the plaza center and $\lambda$ controls memory.
+  \end{alertblock}
+
+  \begin{exampleblock}{Interpretation}
+    Nearby lanterns glow more strongly, with a fading trace of the previous moment.
+  \end{exampleblock}
+\end{frame}
+
+\section{Logic}
+
+\begin{frame}{Derivation Logic}{Memory parameter}
+  \footnotesize
+  \textbf{Goal.} Estimate the memory coefficient $\lambda$ in
+  \[
+    b_t = z_t + \lambda b_{t-1} + \varepsilon_t,
+    \qquad z_t \text{ known}.
+  \]
+
+  \vspace{-0.25cm}
+  \begin{align*}
+    r_t &= b_t - z_t,\\
+    J(\lambda) &= \sum_{t=1}^{T} (r_t-\lambda b_{t-1})^2,\\
+    0 &= -2\sum_{t=1}^{T} b_{t-1}(r_t-\lambda b_{t-1}),\\
+    \hat{\lambda}
+    &= \frac{\sum_{t=1}^{T} b_{t-1}r_t}
+            {\sum_{t=1}^{T} b_{t-1}^2}.
+  \end{align*}
+\end{frame}
+
+\begin{frame}{Derivation Logic}{How to present the chain}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.48\textwidth}
+    \begin{block}{Make explicit}
+      \begin{itemize}
+        \item What is observed
+        \item What is assumed known
+        \item Which quantity is being estimated
+      \end{itemize}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{alertblock}{Keep short}
+      \begin{itemize}
+        \item Avoid algebra that does not change the idea.
+        \item Use one equation per logical step.
+        \item Move edge cases to backup slides.
+      \end{itemize}
+    \end{alertblock}
+  \end{columns}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{Speaking note}
+    The audience should feel the derivation moving forward, not just expanding sideways.
+  \end{exampleblock}
+\end{frame}
+
+\section{Wrap-Up}
+
+\begin{frame}{Summary}{What this random demo illustrates}
+  \begin{itemize}
+    \item Metadata fields for title, subtitle, authors, institute, date, conference, and title note
+    \item A title page using the closing-style background
+    \item Content pages using the CityUHK content background
+    \item Automatic section pages using the section background
+    \item Example slides for bullets, figures, equations, and derivations
+  \end{itemize}
+
+  \vspace{0.25cm}
+  \begin{block}{Next step}
+    Replace the lantern story with your actual research, teaching material, or project update.
+  \end{block}
+\end{frame}
+
+\CityUHKClosingFrame{Thank You}{Questions and comments}
+
+\end{document}
