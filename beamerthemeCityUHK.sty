@@ -57,6 +57,15 @@
 \setbeamertemplate{blocks}[rounded][shadow=false]
 \setbeamertemplate{section in toc}[sections numbered]
 \setbeamertemplate{subsection in toc}[circle]
+\setbeamertemplate{section in head/foot}{%
+  \begingroup
+    \def\\{\space}%
+    \insertsectionhead
+  \endgroup
+}
+\setbeamertemplate{section in head/foot shaded}{%
+  \color{fg!55!bg}\usebeamertemplate{section in head/foot}%
+}
 
 \setbeamersize{text margin left=1.05cm,text margin right=1.00cm}
 
@@ -72,6 +81,7 @@
   \usebackgroundtemplate{\CityUHKFullBackground{\CityUHKContentBg}}
 }
 \AtBeginDocument{\CityUHKUseContentBackground}
+\pdfstringdefDisableCommands{\def\\{ }}
 \makeatother
 
 \setbeamertemplate{frametitle}{
