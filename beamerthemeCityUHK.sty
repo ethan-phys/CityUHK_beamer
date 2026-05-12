@@ -59,8 +59,8 @@
 \setbeamertemplate{subsection in toc}[circle]
 \setbeamertemplate{section in head/foot}{%
   \begingroup
-    \def\\{\space}%
-    \insertsectionhead
+    \def\\{\unskip\space\ignorespaces}%
+    \mbox{\insertsectionhead}%
   \endgroup
 }
 \setbeamertemplate{section in head/foot shaded}{%
@@ -77,6 +77,28 @@
 }
 
 \makeatletter
+\newcommand{\CityUHKSectionNavigation}{%
+  \begingroup
+    \def\slideentry##1##2##3##4##5##6{}%
+    \def\sectionentry##1##2##3##4##5{%
+      \ifnum##5=\c@part%
+        \def\insertsectionhead{##2}%
+        \def\insertsectionheadnumber{##1}%
+        \def\insertpartheadnumber{##5}%
+        \ifnum\c@section=##1%
+          \hyperlink{Navigation##3}{{\usebeamertemplate{section in head/foot}}}%
+        \else%
+          \hyperlink{Navigation##3}{{\usebeamertemplate{section in head/foot shaded}}}%
+        \fi%
+        \hskip0.9em\relax%
+      \fi%
+      \ignorespaces%
+    }%
+    \usebeamerfont{section in head/foot}\usebeamercolor[fg]{section in head/foot}%
+    \dohead%
+  \endgroup
+}
+
 \newcommand{\CityUHKUseContentBackground}{
   \usebackgroundtemplate{\CityUHKFullBackground{\CityUHKContentBg}}
 }
@@ -102,7 +124,7 @@
     \color{CityURed}\rule{\dimexpr\paperwidth-1.8cm\relax}{0.8pt}\par
     \vspace{0.06cm}
     \hbox to \dimexpr\paperwidth-1.8cm\relax{
-      {\scriptsize\insertsectionnavigationhorizontal{0.72\paperwidth}{}{}}
+      {\scriptsize\hbox to 0.72\paperwidth{\CityUHKSectionNavigation\hfil}}
       \hfill
       {\scriptsize\color{CityUMuted}\insertframenumber{} / \inserttotalframenumber}
     }
